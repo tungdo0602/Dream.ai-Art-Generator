@@ -2,6 +2,8 @@ import requests
 import time
 from urllib.parse import urlparse, unquote
 import os
+import webbrowser
+import base64
 
 apiKey = "AIzaSyDCvp5MTJLUdtBYEKYWXJrlLzu1zuKM6Xw" # Get from "x-goog-api-key" header in "installations" requests
 styles = {
@@ -74,6 +76,11 @@ Style: default, paint, hdr, polygon, gouache, realistic, comic, line-art, malevo
         if "completed" in res.json()['state']:
             cls()
             print("Result ({}): ".format(desc) + res.json()['result']['final'])
+            if input("Get Image as Base64? [Y/N]: ").lower() == "y":
+                bfile = base64.b64encode(requests.get(res.json()['result']['final']).content).decode("utf-8")
+                name = unquote(urlparse(res.json()['result']['final']).path.split("/")[-1])
+                open(name + ".txt", "w").write("data:image/{};base64,".format(os.path.splitext(name)[1].replace(".", "")) + bfile)
+                print("Done!")
             if input("Download File? [Y/N]: ").lower() == "y":
                 downloadFile(res.json()['result']['final'])
                 print("Done!")
