@@ -92,4 +92,6 @@ Style: default, paint, hdr, polygon, gouache, realistic, comic, line-art, malevo
             time.sleep(1) # Avoid Rate Limit
             
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        cls()
