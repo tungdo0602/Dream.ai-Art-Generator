@@ -2,7 +2,6 @@ import requests
 import time
 from urllib.parse import urlparse, unquote
 import os
-import webbrowser
 import base64
 
 apiKey = "AIzaSyDCvp5MTJLUdtBYEKYWXJrlLzu1zuKM6Xw" # Get from "x-goog-api-key" header in "installations" requests
@@ -75,7 +74,7 @@ Style: default, paint, hdr, polygon, gouache, realistic, comic, line-art, malevo
         res = fetchState(token, id)
         if "completed" in res.json()['state']:
             cls()
-            print("Result ({}): ".format(desc) + res.json()['result']['final'])
+            print("Result (Description: {} | Style: {}): ".format(desc, style) + res.json()['result']['final'])
             if input("Get Image as Base64? [Y/N]: ").lower() == "y":
                 bfile = base64.b64encode(requests.get(res.json()['result']['final']).content).decode("utf-8")
                 name = unquote(urlparse(res.json()['result']['final']).path.split("/")[-1])
@@ -87,6 +86,9 @@ Style: default, paint, hdr, polygon, gouache, realistic, comic, line-art, malevo
                 return
             else:
                 return
+        elif "failed" in res.json()['state']:
+                print("failed")
+                return
         else:
             print(res.json()['state'])
             time.sleep(1) # Avoid Rate Limit
@@ -94,4 +96,5 @@ Style: default, paint, hdr, polygon, gouache, realistic, comic, line-art, malevo
 if __name__ == "__main__":
     while True:
         main()
+        input("Press Any Key To Continues...")
         cls()
